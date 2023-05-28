@@ -1,0 +1,42 @@
+#
+# This file is managed by Puppet.
+#
+[http.routers]
+  [http.routers.api]
+    entrypoints = ["web"]
+    rule = "Host(`traefik-dashboard.127.0.0.1.nip.io`) && (PathPrefix(`/traefik/{uri:[a-z]+}/`) || (PathPrefix(`/api/`) && HeadersRegexp(`Referer`, `.*/traefik/dashboard/.*`)))"
+    service = "api@internal"
+    middlewares = ["api_authn", "remove_prefix"]
+    priority = 1500
+
+  [http.routers.private_hostname_metrics]
+    entrypoints = ["monitoring"]
+    rule = "Host(`traefik-metrics.127.0.0.1.nip.io`) && Path(`/traefik/metrics`)"
+    middlewares = ["remove_prefix"]
+    service = "prometheus@internal"
+    priority = 1500
+
+  [http.routers.private_hostname_ping]
+    entrypoints = ["monitoring"]
+    rule = "Host(`traefik-ping.127.0.0.1.nip.io`) && Path(`/traefik/ping`)"
+    middlewares = ["remove_prefix"]
+    service = "ping@internal"
+    priority = 1500
+
+[http.middlewares]
+  [http.middlewares.api_authn.basicAuth]
+    users = [
+       # admin:admin
+       # htpasswd -n -B -C 10 admin
+      "admin:$2y$10$6vUkASR0zcZLlfnTVEpOHOKg/zRh.PtJWOpCV06YyFU8d3X/xyvru"
+    ]
+
+  [http.middlewares.remove_prefix.stripPrefix]
+    prefixes = ["/traefik"]
+    forceSlash = false
+
+[http.serversTransports.shortForwardingTimeouts.forwardingTimeouts]
+  dialTimeout = "3s"
+  responseHeaderTimeout = "3s"
+  idleConnTimeout = "3s"
+  readIdleTimeout = "3s"

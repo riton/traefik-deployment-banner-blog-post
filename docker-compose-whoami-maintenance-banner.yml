@@ -1,0 +1,24 @@
+---
+version: '3.7'
+
+services:
+  maintenance-banner:
+    build:
+      context: './maintenance-banner'
+    environment:
+        TZ: 'Europe/Paris'
+    logging:
+      options:
+        tag: 'maintenance-banner'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami-maintenance-banner.rule=Host(`whoami.127.0.0.1.nip.io`)"
+      #- "traefik.http.routers.whoami-maintenance-banner.rule=Host(`whoami.127.0.0.1.nip.io`) && !HeadersRegexp(`User-Agent`, `nobanner`)"
+      - "traefik.http.routers.whoami-maintenance-banner.entrypoints=web"
+      - "traefik.http.services.whoami-maintenance-banner.loadbalancer.sticky=false"
+      - "traefik.http.services.whoami-maintenance-banner.loadbalancer.server.port=80"
+      - "traefik.http.services.whoami-maintenance-banner.loadbalancer.server.scheme=http"
+      - "traefik.http.services.whoami-maintenance-banner.loadbalancer.healthcheck.interval=15s"
+      - "traefik.http.services.whoami-maintenance-banner.loadbalancer.healthcheck.timeout=5s"
+      - "traefik.http.services.whoami-maintenance-banner.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.whoami-maintenance-banner.loadbalancer.healthcheck.followRedirects=false"

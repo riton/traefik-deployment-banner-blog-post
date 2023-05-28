@@ -1,0 +1,27 @@
+---
+version: '3.7'
+
+services:
+  traefik:
+    image: 'traefik:v2.9'
+    ports:
+      - target: 80
+        published: 80
+        mode: host
+      - target: 8090
+        published: 8090
+        mode: host
+    environment:
+        TZ: 'Europe/Paris'
+    volumes:
+      - type: bind
+        source: '/var/run/docker.sock'
+        target: '/var/run/docker.sock'
+        read_only: true
+      - type: bind
+        source: './traefik/config'
+        target: '/etc/traefik'
+        read_only: true
+    logging:
+      options:
+        tag: 'traefik'

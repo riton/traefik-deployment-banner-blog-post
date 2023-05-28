@@ -1,0 +1,43 @@
+#
+# This file is managed by Puppet.
+#
+version: '3.7'
+
+networks:
+  keycloak-overlay:
+    external: true
+
+services:
+  whoami:
+    image: 'traefik/whoami'
+    networks:
+      - keycloak-overlay
+    environment:
+        TZ: 'Europe/Paris'
+    logging:
+      options:
+        tag: 'whoami${DEPLOYMENT_NAME}'
+    deploy:
+      mode: global
+      update_config:
+        parallelism: 1
+        delay: 10s
+        monitor: 10s
+        max_failure_ratio: 0.3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+        window: 120s
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=keycloak-overlay"
+        - "traefik.http.routers.whoami${DEPLOYMENT_NAME}.rule=Host(`whoami${DEPLOYMENT_NAME}.127.0.0.1.nip.io`)"
+        - "traefik.http.routers.whoami${DEPLOYMENT_NAME}.entrypoints=web"
+        - "traefik.http.services.whoami${DEPLOYMENT_NAME}.loadbalancer.sticky=true"
+        - "traefik.http.services.whoami${DEPLOYMENT_NAME}.loadbalancer.server.port=80"
+        - "traefik.http.services.whoami${DEPLOYMENT_NAME}.loadbalancer.server.scheme=http"
+        - "traefik.http.services.whoami${DEPLOYMENT_NAME}.loadbalancer.healthcheck.interval=15"
+        - "traefik.http.services.whoami${DEPLOYMENT_NAME}.loadbalancer.healthcheck.timeout=5"
+        - "traefik.http.services.whoami${DEPLOYMENT_NAME}.loadbalancer.healthcheck.path=/"
+        - "traefik.http.services.whoami${DEPLOYMENT_NAME}.loadbalancer.healthcheck.followRedirects=false"

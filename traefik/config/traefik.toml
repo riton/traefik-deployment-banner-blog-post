@@ -1,0 +1,57 @@
+#
+# This file is managed by Puppet.
+#
+[global]
+  checkNewVersion = false
+  sendAnonymousUsage = false
+
+[log]
+  level = "WARN" #DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+  format = "json" #common
+
+[accessLog]
+  format= "json"
+
+  [accessLog.fields]
+    defaultMode = "keep"
+
+    [accessLog.fields.headers]
+      defaultMode = "keep"
+
+      [accessLog.fields.headers.names]
+        "Authorization" = "drop"
+
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+
+  [entryPoints.monitoring]
+    address = ":8090"
+
+[providers]
+  [providers.file]
+    filename = "/etc/traefik/dynamic-conf.toml"
+    watch = true
+
+  [providers.docker]
+    endpoint = "unix:///var/run/docker.sock"
+    swarmMode = false
+    watch = true
+    exposedByDefault = false
+
+[ping]
+  entryPoint = "monitoring"
+  manualRouting = true
+
+[api]
+  dashboard = true
+  insecure = false
+
+[metrics]
+  [metrics.prometheus]
+    addEntryPointsLabels = true
+    addServicesLabels = true
+    addRoutersLabels = true
+    entryPoint = "monitoring"
+    manualRouting = true
