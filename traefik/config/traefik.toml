@@ -6,7 +6,7 @@
   sendAnonymousUsage = false
 
 [log]
-  level = "WARN" #DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+  level = "DEBUG" #DEBUG, INFO, WARN, ERROR, FATAL, PANIC
   format = "json" #common
 
 [accessLog]

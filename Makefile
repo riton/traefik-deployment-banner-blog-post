@@ -10,7 +10,7 @@ deploy-whoami-maintenance-banner:
 deploy: deploy-traefik deploy-whoami
 
 show-traefik-logs:
-	docker compose --file docker-compose-traefik.yml logs -f traefik
+	docker compose --file docker-compose-traefik.yml logs --tail 100 -f traefik
 
 clean-traefik:
 	docker compose --file docker-compose-traefik.yml down -v

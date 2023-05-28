@@ -13,6 +13,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`whoami.127.0.0.1.nip.io`)"
       - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.whoami.priority=100"
       - "traefik.http.services.whoami.loadbalancer.sticky.cookie=false"
       # - "traefik.http.services.whoami.loadbalancer.sticky.cookie=true"
       # - "traefik.http.services.whoami.loadbalancer.sticky.cookie.name=whoami_sticky_session"
