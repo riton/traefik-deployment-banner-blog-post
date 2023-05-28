@@ -1,9 +1,6 @@
 ## Why ?
 
-Almost ready to use docker stacks inspired by the keycloak service
-
-Ready for modifications and to play with
-
+Original code of the _soon to be posted_ post about `traefik` and _router priorities_.
 
 ##  URLs
 
